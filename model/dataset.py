@@ -24,7 +24,9 @@ class BilingualDataset(Dataset):
     def __getitem__(self, idx):
         src_target_pair = self.ds[idx]
         src_text = src_target_pair[self.src_lang]
+        src_text = src_text[:self.seq_len - 3]   
         tgt_text = src_target_pair[self.tgt_lang]
+        tgt_text = tgt_text[:self.seq_len - 2] 
 
         # Transform the text into tokens
         enc_input_tokens = self.tokenizer_src.encode(src_text).ids
@@ -36,9 +38,10 @@ class BilingualDataset(Dataset):
         dec_num_padding_tokens = self.seq_len - len(dec_input_tokens) - 1
 
         # Make sure the number of padding tokens is not negative. If it is, the sentence is too long
-        if enc_num_padding_tokens < 0 or dec_num_padding_tokens < 0:
-            raise ValueError("Sentence is too long")
-
+        if enc_num_padding_tokens < 0 : 
+            enc_num_padding_tokens = 0       
+        if dec_num_padding_tokens < 0:
+            dec_num_padding_tokens = 0
         # Add <s> and </s> token
         encoder_input = torch.cat(
             [
@@ -71,9 +74,9 @@ class BilingualDataset(Dataset):
         )
 
         # Double check the size of the tensors to make sure they are all seq_len long
-        assert encoder_input.size(0) == self.seq_len
-        assert decoder_input.size(0) == self.seq_len
-        assert label.size(0) == self.seq_len
+        assert encoder_input.size(0) == self.seq_len, f"Expected encoder_input to be of length {self.seq_len}, got {encoder_input.size(0)}"
+        assert decoder_input.size(0) == self.seq_len, f"Expected decoder_input to be of length {self.seq_len}, got {decoder_input.size(0)}"
+        assert label.size(0) == self.seq_len, f"Expected label to be of length {self.seq_len}, got {label.size(0)}"
 
         return {
             "encoder_input": encoder_input,  # (seq_len)

@@ -1,0 +1,7 @@
+model/__pycache__
+*.pt
+*.json
+model/runs/
+model/*/*_weights/
+
+wandb/

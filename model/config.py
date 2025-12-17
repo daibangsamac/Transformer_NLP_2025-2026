@@ -5,7 +5,7 @@ def get_config():
         "batch_size": 8,
         "num_epochs": 20,
         "lr": 10**-4,
-        "seq_len": 900,
+        "seq_len": 400,
         "d_model": 512,
         "datasource": 'nguyenvuhuy/iwslt2015-en-vi',
         "ds_config" : 'default',
@@ -15,7 +15,7 @@ def get_config():
         "model_basename": "tmodel_",
         "preload": "latest",
         "tokenizer_file": "tokenizer_{0}.json",
-        "experiment_name": "runs/tmodel"
+        "experiment_name": "runs/training_model"
     }
 
 def get_weights_file_path(config, epoch: str):
